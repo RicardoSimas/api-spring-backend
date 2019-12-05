@@ -1,5 +1,6 @@
 package com.rsimas.cursomc;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,19 @@ import com.rsimas.cursomc.domain.Cidade;
 import com.rsimas.cursomc.domain.Cliente;
 import com.rsimas.cursomc.domain.Endereco;
 import com.rsimas.cursomc.domain.Estado;
+import com.rsimas.cursomc.domain.PagamentoComBoleto;
+import com.rsimas.cursomc.domain.PagamentoComCartao;
+import com.rsimas.cursomc.domain.Pedido;
 import com.rsimas.cursomc.domain.Produto;
+import com.rsimas.cursomc.domain.enuns.EstadoPagamento;
 import com.rsimas.cursomc.domain.enuns.TipoCliente;
 import com.rsimas.cursomc.repositories.CategoriaRepository;
 import com.rsimas.cursomc.repositories.CidadeRepository;
 import com.rsimas.cursomc.repositories.ClienteRepository;
 import com.rsimas.cursomc.repositories.EnderecoRepository;
 import com.rsimas.cursomc.repositories.EstadoRepository;
+import com.rsimas.cursomc.repositories.PagamentoRepository;
+import com.rsimas.cursomc.repositories.PedidoRepository;
 import com.rsimas.cursomc.repositories.ProdutoRepository;
 
 // Executa uma ação sempre que a aplicação iniciar.
@@ -42,6 +49,12 @@ public class CursomcApplication implements CommandLineRunner{
 	
 	@Autowired
 	EnderecoRepository enderecoRepository;
+	
+	@Autowired
+	PedidoRepository pedidoRepository;
+	
+	@Autowired
+	PagamentoRepository pagamentoRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -58,11 +71,11 @@ public class CursomcApplication implements CommandLineRunner{
 		Produto p3 = new Produto(null, "mouse", 80);
 		
 		cat1.getProdutos().addAll(Arrays.asList(p1,p2,p3));
-		cat2.getProdutos().add(p2);
+		cat2.getProdutos().addAll(Arrays.asList(p2));
 		
-		p1.getCategorias().add(cat1);
+		p1.getCategorias().addAll(Arrays.asList(cat1));
 		p2.getCategorias().addAll(Arrays.asList(cat1,cat2));
-		p3.getCategorias().add(cat1);
+		p3.getCategorias().addAll(Arrays.asList(cat1));
 		
 		categoriaRepository.saveAll(Arrays.asList(cat1,cat2));
 		produtoRepository.saveAll(Arrays.asList(p1,p2,p3));
@@ -82,8 +95,7 @@ public class CursomcApplication implements CommandLineRunner{
 		
 		Cliente cli1 = new Cliente(null, "Maria Silva", "Maria@gmail.com", "36378912377", TipoCliente.PESSOAFISICA);
 		
-		cli1.getTelefones().add("27363326");
-		cli1.getTelefones().add("938381568");
+		cli1.getTelefones().addAll(Arrays.asList("27363326","938381568"));
 		
 		Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 203", "Jardim", "38220834", cli1, c1);
 		Endereco e2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cli1, c2);
@@ -93,6 +105,21 @@ public class CursomcApplication implements CommandLineRunner{
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(e1,e2));
 		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cli1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cli1, e2);
+		
+		PagamentoComCartao pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		ped1.setPagamento(pagto1);
+		
+		PagamentoComBoleto pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
+		ped2.setPagamento(pagto2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));	
+		
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
 	}
 
 }
