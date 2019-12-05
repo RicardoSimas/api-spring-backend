@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 		inverseJoinColumns = @JoinColumn(name = "Categoria_id")
 	)
 	private List<Categoria> categorias = new ArrayList<>();
-	
+		
 	public Produto() {}
 	
 	public Produto(Integer id, String nome, double preco) {
