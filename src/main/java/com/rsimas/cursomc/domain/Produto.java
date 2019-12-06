@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 	)
 	private List<Categoria> categorias = new ArrayList<>();
 	
+	@JsonIgnore
 	@OneToMany(mappedBy="id.produto")
 	private Set<ItemPedido> itens = new HashSet<>();
 		
@@ -47,6 +48,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 		this.preco = preco;
 	}
 	
+	@JsonIgnore
 	public List<Pedido> getPedidos() {
 		List<Pedido> lista = new ArrayList<>();
 		
