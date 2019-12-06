@@ -17,7 +17,7 @@ public class CategoriaService {
 	@Autowired
 	private CategoriaRepository repo;
 	
-	public Categoria search(Integer id) throws ObjectNotFoundException {
+	public Categoria find(Integer id) throws ObjectNotFoundException {
 		Optional<Categoria> obj = repo.findById(id);
 		
 		return obj.orElseThrow(() -> new com.rsimas.cursomc.services.exception.ObjectNotFoundException(
@@ -25,7 +25,12 @@ public class CategoriaService {
 		}
 	
 	public Categoria insert(Categoria obj) {
-		
+		obj.setId(null);
+		return repo.save(obj);
+	}
+	
+	public Categoria update(Categoria obj) throws ObjectNotFoundException {
+		find(obj.getId());
 		return repo.save(obj);
 	}
 }

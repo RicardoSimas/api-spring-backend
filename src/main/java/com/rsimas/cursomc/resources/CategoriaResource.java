@@ -24,9 +24,9 @@ public class CategoriaResource {
 	CategoriaService service;
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public ResponseEntity<?> find(@PathVariable Integer id) throws ObjectNotFoundException {
+	public ResponseEntity<Categoria> find(@PathVariable Integer id) throws ObjectNotFoundException {
 		
-		Categoria obj = service.search(id);
+		Categoria obj = service.find(id);
 	
 		return ResponseEntity.ok().body(obj);
 	}
@@ -34,7 +34,7 @@ public class CategoriaResource {
 	//RequestBody faz o Json ser convertido para OBJ.
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<Void> insert(@RequestBody Categoria obj){
-		
+		obj.setId(null);
 		obj = service.insert(obj);
 		
 		//Pega a URI do NOVO recurso gerado.
@@ -42,5 +42,15 @@ public class CategoriaResource {
 				.path("/{id}").buildAndExpand(obj.getId()).toUri();
 		
 		return ResponseEntity.created(uri).build();
+	}
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
+	public ResponseEntity<Void> update(@RequestBody Categoria obj, @PathVariable Integer id) throws ObjectNotFoundException{
+		
+		obj.setId(id);
+		
+		obj = service.update(obj);
+		
+		return ResponseEntity.noContent().build();
 	}
 }
