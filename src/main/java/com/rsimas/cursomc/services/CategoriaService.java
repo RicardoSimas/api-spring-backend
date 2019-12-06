@@ -23,4 +23,9 @@ public class CategoriaService {
 		return obj.orElseThrow(() -> new com.rsimas.cursomc.services.exception.ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Categoria.class.getName()));
 		}
+	
+	public Categoria insert(Categoria obj) {
+		
+		return repo.save(obj);
+	}
 }
