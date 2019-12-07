@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rsimas.cursomc.domain.Categoria;
 import com.rsimas.cursomc.services.CategoriaService;
+import com.rsimas.cursomc.services.exception.DataIntregrityException;
 
 import javassist.tools.rmi.ObjectNotFoundException;
 
@@ -50,6 +51,14 @@ public class CategoriaResource {
 		obj.setId(id);
 		
 		obj = service.update(obj);
+		
+		return ResponseEntity.noContent().build();
+	}
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable Integer id) throws DataIntregrityException, ObjectNotFoundException {
+		
+		service.delete(id);
 		
 		return ResponseEntity.noContent().build();
 	}

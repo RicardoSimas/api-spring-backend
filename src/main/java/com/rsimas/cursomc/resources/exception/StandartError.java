@@ -2,11 +2,14 @@ package com.rsimas.cursomc.resources.exception;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class StandartError implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Integer status;
 	private String msg;
+	@JsonFormat(pattern="HH:mm")
 	private long timeStamp;
 	
 	public StandartError(Integer status, String msg, long timeStamp) {
@@ -31,7 +34,8 @@ public class StandartError implements Serializable{
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-
+	
+	@JsonFormat(pattern="HH:mm")
 	public long getTimeStamp() {
 		return timeStamp;
 	}
