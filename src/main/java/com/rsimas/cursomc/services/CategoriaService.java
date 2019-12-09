@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.rsimas.cursomc.domain.Categoria;
+import com.rsimas.cursomc.dto.CategoriaDTO;
 import com.rsimas.cursomc.repositories.CategoriaRepository;
 import com.rsimas.cursomc.services.exception.DataIntregrityException;
 
@@ -66,5 +67,9 @@ public class CategoriaService {
 				orderBy);
 		
 		return repo.findAll(pageRequest);
-	} 
+	}
+	
+	public Categoria FromDTO(CategoriaDTO objDTO) {
+		return new Categoria(objDTO.getId(), objDTO.getNome());
+	}
 }
