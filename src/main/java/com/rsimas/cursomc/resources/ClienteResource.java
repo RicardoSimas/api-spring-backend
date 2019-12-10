@@ -1,5 +1,6 @@
 package com.rsimas.cursomc.resources;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rsimas.cursomc.domain.Cliente;
+import com.rsimas.cursomc.dto.ClienteAllDTO;
 import com.rsimas.cursomc.dto.ClienteDTO;
 import com.rsimas.cursomc.services.ClienteService;
 import com.rsimas.cursomc.services.exception.DataIntregrityException;
@@ -36,6 +39,20 @@ public class ClienteResource {
 	
 		return ResponseEntity.ok().body(obj);
 	}
+	
+	//RequestBody faz o Json ser convertido para OBJ.
+		@RequestMapping(method=RequestMethod.POST)
+		public ResponseEntity<Void> insert(@Valid @RequestBody ClienteAllDTO objDTO){
+			Cliente obj = service.FromDTO(objDTO);
+			obj.setId(null);
+			obj = service.insert(obj);
+			
+			//Pega a URI do NOVO recurso gerado.
+			URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+					.path("/{id}").buildAndExpand(obj.getId()).toUri();
+			
+			return ResponseEntity.created(uri).build();
+		}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
 	public ResponseEntity<Void> update(@Valid @RequestBody ClienteDTO objDTO, @PathVariable Integer id) throws ObjectNotFoundException{

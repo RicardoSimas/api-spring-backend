@@ -11,9 +11,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.rsimas.cursomc.domain.Cidade;
 import com.rsimas.cursomc.domain.Cliente;
+import com.rsimas.cursomc.domain.Endereco;
+import com.rsimas.cursomc.domain.enuns.TipoCliente;
+import com.rsimas.cursomc.dto.ClienteAllDTO;
 import com.rsimas.cursomc.dto.ClienteDTO;
 import com.rsimas.cursomc.repositories.ClienteRepository;
+import com.rsimas.cursomc.repositories.EnderecoRepository;
 import com.rsimas.cursomc.services.exception.DataIntregrityException;
 
 import javassist.tools.rmi.ObjectNotFoundException;
@@ -24,12 +29,22 @@ public class ClienteService {
 	@Autowired
 	private ClienteRepository repo;
 	
+	@Autowired
+	private EnderecoRepository repoEnd;
+	
 	public Cliente find(Integer id) throws ObjectNotFoundException {
 		Optional<Cliente> obj = repo.findById(id);
 		
 		return obj.orElseThrow(() -> new com.rsimas.cursomc.services.exception.ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
-		}
+	}
+	
+	public Cliente insert(Cliente obj) {
+		obj.setId(null);
+		obj = repo.save(obj);
+		repoEnd.saveAll(obj.getEnderecos());
+		return obj;
+	}
 	
 	public Cliente update(Cliente obj) throws ObjectNotFoundException {
 		Cliente newObj = find(obj.getId());
@@ -66,6 +81,24 @@ public class ClienteService {
 	
 	public Cliente FromDTO(ClienteDTO objDTO) {
 		return new Cliente(objDTO.getId(), objDTO.getNome(), objDTO.getEmail(), null, null);
+	}
+	
+	public Cliente FromDTO(ClienteAllDTO objDTO) {
+		Cliente cli = new Cliente(null, objDTO.getNome(), objDTO.getEmail(), objDTO.getCpfOuCnpj(), TipoCliente.toEnum(objDTO.getTipo()));
+		Cidade cid = new Cidade(objDTO.getCidadeId(), null, null);
+		Endereco end = new Endereco(null, objDTO.getLogradouro(), objDTO.getNumero(), objDTO.getComplemento(), objDTO.getBairro(), objDTO.getCep(), cli, cid);
+		cli.getEnderecos().add(end);
+		cli.getTelefones().add(objDTO.getTelefone1());
+			
+		if(objDTO.getTelefone2()!= null) {
+			cli.getTelefones().add(objDTO.getTelefone2());
+		}
+		
+		if(objDTO.getTelefone3()!= null) {
+			cli.getTelefones().add(objDTO.getTelefone3());
+		}
+		
+		return cli;
 	}
 	
 	private void updateData(Cliente newObj, Cliente obj) {
