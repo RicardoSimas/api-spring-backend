@@ -24,6 +24,9 @@ public class ClienteAllDTO implements Serializable {
 	private Integer tipo;
 	
 	@javax.validation.constraints.NotEmpty(message="Preenchimento obrigatório")
+	private String senha;
+	
+	@javax.validation.constraints.NotEmpty(message="Preenchimento obrigatório")
 	private String logradouro;
 	
 	@javax.validation.constraints.NotEmpty(message="Preenchimento obrigatório")
@@ -73,6 +76,14 @@ public class ClienteAllDTO implements Serializable {
 
 	public void setTipo(Integer tipo) {
 		this.tipo = tipo;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 
 	public String getLogradouro() {
