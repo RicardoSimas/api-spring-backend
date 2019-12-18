@@ -98,6 +98,20 @@ public class ClienteService {
 		return categorias;
 	}
 	
+	public Cliente findByEmail(String email) throws ObjectNotFoundException {
+		UserSS user = UserService.authenticated();
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !email.equals(user.getUsername())) {
+			throw new AuthorizationException("Acesso negado");
+		}
+	
+		Cliente obj = repo.findByEmail(email);
+		if (obj == null) {
+			throw new ObjectNotFoundException(
+					"Objeto não encontrado! Id: " + user.getId() + ", Tipo: " + Cliente.class.getName());
+		}
+		return obj;
+	}
+	
 	//Método que Encapsula informações e operações sobre a paginação. 
 	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction){
 		
@@ -148,4 +162,6 @@ public class ClienteService {
 		
 		return s3Service.uploadFile(imageService.getInputStream(jpgImage, "jpg"), fileName, "image");
 	}
+	
+	
 }
