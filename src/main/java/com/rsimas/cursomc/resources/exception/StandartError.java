@@ -2,21 +2,30 @@ package com.rsimas.cursomc.resources.exception;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-public class StandartError implements Serializable{
+public class StandartError implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
+	private long timestamp;
 	private Integer status;
-	private String msg;
-	@JsonFormat(pattern="HH:mm")
-	private long timeStamp;
-	
-	public StandartError(Integer status, String msg, long timeStamp) {
+	private String error;
+	private String message;
+	private String path;
+
+	public StandartError(long timestamp, Integer status, String error, String message, String path) {
 		super();
+		this.timestamp = timestamp;
 		this.status = status;
-		this.msg = msg;
-		this.timeStamp = timeStamp;
+		this.error = error;
+		this.message = message;
+		this.path = path;
+	}
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	public Integer getStatus() {
@@ -27,20 +36,28 @@ public class StandartError implements Serializable{
 		this.status = status;
 	}
 
-	public String getMsg() {
-		return msg;
+	public String getError() {
+		return error;
 	}
 
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-	
-	@JsonFormat(pattern="HH:mm")
-	public long getTimeStamp() {
-		return timeStamp;
+	public void setError(String error) {
+		this.error = error;
 	}
 
-	public void setTimeStamp(long timeStamp) {
-		this.timeStamp = timeStamp;
+	public String getMessage() {
+		return message;
 	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
 }
